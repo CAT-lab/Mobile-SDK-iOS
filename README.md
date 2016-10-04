@@ -50,8 +50,6 @@ You can find and open the PlatformTest project in `Mobile-SDK-iOS/SampleApp/Xcal
 
 * Drag `Xcaliper.framework` into Frameworks group inside your Xcode project or workspace.
 
-![image](Documentation/Framework.png)
-
 That's it!  
 Now just add `#import <Xcaliper/XcaliperSDK.h>` wherever you want to use the SDK in your project.
 
