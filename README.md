@@ -60,9 +60,10 @@ In Xcode, secondary-click your project's .plist file and select Open As -> Sourc
 
 Insert the following XML snippet into the body of your file just before the final </dict> element.
 
+```xml
 <key>XCaliperAccessKey</key>
 <string>{your-access-key}</string>
-
+```
 
 # Documentation
 
