@@ -54,10 +54,21 @@ That's it!
 Now just add `#import <Xcaliper/XcaliperSDK.h>` wherever you want to use the SDK in your project.
 
 
+#### Configure Xcode Project
+
+In Xcode, secondary-click your project's .plist file and select Open As -> Source Code.
+
+Insert the following XML snippet into the body of your file just before the final </dict> element.
+
+<key>XCaliperAccessKey</key>
+<string>{your-access-key}</string>
+
 
 # Documentation
 
 ## Authentication
+
+
 
 ## Measure
 
