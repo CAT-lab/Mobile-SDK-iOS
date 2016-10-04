@@ -111,6 +111,10 @@ func manager(_ manager: XCManager!, didFailToConnectWithError error: Error!) {
 ## Measure
 
 ```swift
+let measureResource = XCMeasureResource(gender: MeasureGenderMale, age: 30, bodyHeight: 68, bodyWeight: 176)
+measureResource.deviceUUID = XCManager.default().connectedConnection.identifier.uuidString
+
+// Start Measuring
 XCManager.default().service(XCService.getMeasureValue, data: nil, timeout: 5)
 ```
 
@@ -130,14 +134,27 @@ func manager(_ manager: XCManager!, didUpdate service: XCServiceInterface!, for 
     measureMessage.measure // Point of Measure
     measureMessage.pressure // Pressure of Measure
     
+    if ( measureMessage.status == XCMessageStatus.OK ) {
+      if ( self.containerView.measureSite == MeasureSite.triceps ) {
+        measureResource.measureTriceps = measureValue
+      }
+      else if ( self.containerView.measureSite == MeasureSite.abdominal ) {
+        measureResource.measureAbdominal = measureValue
+      }
+      else if ( self.containerView.measureSite == MeasureSite.thigh ) {
+        measureResource.measureThigh = measureValue
+      }
+    }
   }
 }
-```
 
-Close to measure
-
-```swift
-XCManager.default().closeAllServices(with: self)
+func finishMeasure() {
+    // Save
+    measureResource.save()
+    
+    // Close to measure
+    XCManager.default().closeAllServices(with: self)
+}
 ```
 
 ## Dashboard
