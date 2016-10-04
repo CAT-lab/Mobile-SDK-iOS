@@ -19,6 +19,7 @@ You will need to have access key to an existing XCaliper License in order to aut
   - [Configure Xcode Project](#configure-xcode-project)
 - [Documentation](#documentation)
   - [Authentication](#authentication)
+  - [Connect](#connect)
   - [Measure](#meature)
   - [Dashboard](#dashboard)
   - [Search](#search)
@@ -70,15 +71,163 @@ Insert the following XML snippet into the body of your file just before the fina
 
 ## Authentication
 
+```swift
+XCManager.default().initilaize(with:self)
+```
 
+## Connect
+
+```swift
+if ( XCManager.default().startScan(5, allowDuplicates:true) == true ) {
+  // Start Connecting
+}
+```
+
+```swift
+func manager(_ manager: XCManager!, didDiscover connections: [XCConnection]!) {
+  for ( _, connection ) in connections.enumerated() {
+    if ( (connection.name) != nil && connection.name!.hasPrefix("X-Caliper") && connection.rssi.int32Value > -45 ) {
+
+      // Start Paring
+      XCManager.default().pair(connection, timeout: 5)
+      break
+    }
+  }
+}
+
+func manager(_ manager: XCManager!, didChangePeripheralStatus peripheral: CBPeripheral!) {
+  
+  if peripheral.state == CBPeripheralState.connected {
+    // Connected
+  }
+}
+
+func manager(_ manager: XCManager!, didFailToConnectWithError error: Error!) {
+    // Fail to Connect
+    
+}
+```
 
 ## Measure
 
+```swift
+XCManager.default().service(XCService.getMeasureValue, data: nil, timeout: 5)
+```
+
+
+```swift
+func manager(_ manager: XCManager!, didChangePeripheralStatus peripheral: CBPeripheral!) {
+  if ( peripheral.state == CBPeripheralState.disconnected ) {
+      // Disconnected
+  }
+}
+
+func manager(_ manager: XCManager!, didUpdate service: XCServiceInterface!, for message: XCMessage!, error: Error!) {
+  if ( message.service == XCService.getMeasureValue ) {
+    let measureMessage:XCMeasureMessage = message as! XCMeasureMessage;
+    
+    // 
+    measureMessage.measure // Point of Measure
+    measureMessage.pressure // Pressure of Measure
+    
+  }
+}
+```
+
+Close to measure
+
+```swift
+XCManager.default().closeAllServices(with: self)
+```
+
 ## Dashboard
+
+```swift
+XCMeasureManager.default().delegate = self
+XCMeasureManager.default().restoreResources()
+```
+```swift
+let manager:XCMeasureManager = XCMeasureManager.default()
+let lastResource:XCMeasureResource? = manager.lastResource
+```
+
+#### `XCMeasureResource`
+
+```swift
+var resourceUUID:String     // Universally Unique Identifier of MessureResource
+var bodyWeight:CGFloat      // Body Weight (KG)
+var bodyHeight:CGFloat      // Body Height (CM)
+var gender:MeasureGender    // Gender
+var age:Int                 // Age
+var measureTriceps:CGFloat  // Measure Point of Triceps
+var measureTricepsState:MeasureState  // Measure Analysis State of Triceps 
+var measureAbdominal:CGFloat  // Measure Point of Abdominal
+var measureAbdominalState:MeasureState  // Measure Analysis State of Abdominal
+var measureThigh:CGFloat    // Measure Point of Thigh
+var measureThighState:MeasureState  // Measure Analysis State of Thigh
+var measureTotal:CGFloat    // Sum Point of Measures
+var measureDate:Date        // Measured Datetime
+var bodyFatPercentage:CGFloat // Percentage of body Fat
+var bodyMass:CGFloat        // Point of Body Mass
+var fatMass:CGFloat         // Weight of Fat Mass (KG)
+var leanMass:CGFloat        // Weight of Lean Body Mass (KG)
+var muscleMass:CGFloat      // Weight of Muscle Mass (KG)
+var skeletalMuscleMass:CGFloat // Weight of Skeletal Muscle Mass (KG)
+var idealBodyWeight:CGFloat // Ideal Weight of Body (KG)
+var idealBodyFatPercentage:CGFloat // Ideal Percentage of body Fat
+var idealFatMass:CGFloat    // Ideal Weight of Fat Mass (KG)
+var idealLeanMass:CGFloat   // Ideal Weight of Lean Body Mass (KG)
+var idealMuscleMass:CGFloat // Ideal Weight of Muscle Mass (KG)
+var idealSkeletalMuscleMass:CGFloat // Ideal Weight of Skeletal Muscle Mass (KG)
+var state:MeasureState      // Measure Analysis State
+```
+
+#### Measure State
+
+```swift
+public enum MeasureState {
+    case Unknown
+    case HighlyUnderfat // Highly Underfat
+    case Underfat       // Underfat
+    case Normal         // Normal
+    case Overfat        // Overfat
+    case Obese          // Obese
+}
+```
+
+#### Battery Status
+
+```swift
+manager.batteryValue  Value of Battery Gage ( 1~100, 120 = Charging )
+```
+
 
 ## Search
 
+```swift
+let searchManager:XCSearchManager = XCSearchManager()
+searchManager.delegate = self
 
+let formatter = DateFormatter()
+formatter.dateFormat = "yyyy-MM-dd"
+
+let startDate = Date(timeIntervalSinceNow: -30*24*60*60) // in a Month
+let endDate = Date(timeIntervalSinceNow: 0)
+let start = formatter.string(from: startDate)
+let end = formatter.string(from: endDate)
+searchManager.seek(start, end:end, groupByDay:true)
+```
+
+```swift
+func manager(_ manager: XCSearchManager!, didSeekResources resources: [XCMeasureResource]!) {
+  for i in 0..<resources.count {
+    // Get Resource
+    let resource:XCMeasureResource = resources[i]
+    
+    
+  }
+}
+```
 
 # Terms of Service
 
