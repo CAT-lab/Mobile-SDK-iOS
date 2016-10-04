@@ -16,6 +16,7 @@ You will need to have access key to an existing XCaliper License in order to aut
   - [Download the iOS SDK](#download-the-ios-sdk)
   - [Run the Sample App](#run-the-sample-app)
   - [Add the SDK to Your Project](#add-the-sdk-to-your-project)
+  - [Configure Xcode Project](#configure-xcode-project)
 - [Documentation](#documentation)
   - [Authentication](#authentication)
   - [Measure](#meature)
